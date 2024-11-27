@@ -22,6 +22,7 @@ This repository contains the backend services for **Sariaa**, a smart cafeteria 
 ### Prerequisites
 
 Ensure you have the following installed:
+
 - Java JDK 21+
 - Docker
 - Git
@@ -29,20 +30,22 @@ Ensure you have the following installed:
 ### Installation
 
 1. Clone the repository:
-    ```bash
-    git clone https://github.com/IlyasBlidi/sariaa-backend.git
-    cd sariaa-backend
-    ```
+
+   ```bash
+   git clone https://github.com/IlyasBlidi/sariaa-backend.git
+   cd sariaa-backend
+   ```
 
 2. Start the backend application:
-    ```bash
-    ./mvnw spring-boot:run
-    ```
+
+   ```bash
+   ./mvnw spring-boot:run
+   ```
 
 3. Access the backend API:
-    ```txt
-    Backend: http://localhost:8080
-    ```
+   ```txt
+   Backend: http://localhost:8080
+   ```
 
 ## 📋 Project Structure
 
