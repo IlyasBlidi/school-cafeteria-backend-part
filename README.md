@@ -14,7 +14,7 @@ This repository contains the backend services for **Sariaa**, a smart cafeteria 
 - **Spring Boot** - Java-based framework
 - **Spring Security** - Authentication and authorization
 - **Spring Data JPA** - Data persistence
-- **PostgreSQL** - Primary database
+- **MySQL** - Primary database
 - **Redis** - Caching layer
 
 ## 🚀 Getting Started
@@ -22,7 +22,7 @@ This repository contains the backend services for **Sariaa**, a smart cafeteria 
 ### Prerequisites
 
 Ensure you have the following installed:
-- Java JDK 17+
+- Java JDK 21+
 - Docker
 - Git
 
