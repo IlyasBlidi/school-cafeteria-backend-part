@@ -3,7 +3,7 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.0-brightgreen?style=flat-square&logo=spring)](https://spring.io/projects/spring-boot)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](../LICENSE)
 
-> Backend for Sariaa - Powering the Smart Cafeteria Management System
+> 🚀 Backend for Sariaa - Powering the Smart Cafeteria Management System
 
 ## 🌟 Overview
 
