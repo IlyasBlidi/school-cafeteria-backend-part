@@ -6,6 +6,8 @@ import com.frew.crew.articleCommand.ArticleCommand;
 import com.frew.crew.articleCommand.ArticleCommandDTO;
 import com.frew.crew.articleCommand.ArticleCommandId;
 import com.frew.crew.articleCommand.ArticleCommandRepository;
+import com.frew.crew.card.Card;
+import com.frew.crew.card.CardService;
 import com.frew.crew.user.User;
 import com.frew.crew.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,6 +30,8 @@ public class CommandService {
   private final ArticleCommandRepository articlecommandRepository;
   private final UserRepository userRepository;
   private final ArticleRepository articleRepository;
+
+  private final CardService cardService ;
 
   private BigDecimal calculateTotalPrice(List<ArticleCommand> articles) {
     BigDecimal totalPrice = BigDecimal.ZERO;
@@ -88,6 +92,7 @@ public class CommandService {
     savedCommand.setCommandArticles(articleCommands);
     savedCommand.setTotalPrice(this.calculateTotalPrice(articleCommands));
 
+    cardService.debitCardBalance(user.get().getCard().getId() ,savedCommand.getTotalPrice());
     commandRepository.save(savedCommand) ;
 
 

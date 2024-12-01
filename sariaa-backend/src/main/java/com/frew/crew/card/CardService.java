@@ -1,5 +1,6 @@
 package com.frew.crew.card;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,5 +32,24 @@ public class CardService {
     cardToCharge.setBalance(cardToCharge.getBalance().add(amount));
     cardToCharge.setLastUpdateDate(LocalDate.now());
     return cardRepository.save(cardToCharge);
+  }
+
+  @Transactional
+  public Card debitCardBalance(UUID cardId , BigDecimal amount) {
+    Optional<Card> card = cardRepository.findById(cardId);
+    if (card.isEmpty()) {
+      throw new RuntimeException("Card not found");
+    }
+
+    Card cardTodebit = card.get();
+    if(cardTodebit.getBalance().compareTo(amount) < 0) {
+      throw new RuntimeException("solde insuffisant");
+    }else{
+    cardTodebit.setBalance(cardTodebit.getBalance().subtract(amount));
+    cardTodebit.setLastUpdateDate(LocalDate.now());
+    }
+
+    return cardRepository.save(cardTodebit);
+
   }
 }
