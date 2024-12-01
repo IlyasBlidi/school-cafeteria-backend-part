@@ -3,7 +3,11 @@ package com.frew.crew.card;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,5 +20,16 @@ public class CardService {
         .stream()
         .map(CardMapper::toCardDTO)
         .collect(Collectors.toList());
+  }
+
+  public Card chargeCardBalance(UUID cardId, BigDecimal amount) {
+    Optional<Card> card = cardRepository.findById(cardId);
+    if (card.isEmpty()) {
+      throw new RuntimeException("Card not found");
+    }
+    Card cardToCharge = card.get();
+    cardToCharge.setBalance(cardToCharge.getBalance().add(amount));
+    cardToCharge.setLastUpdateDate(LocalDate.now());
+    return cardRepository.save(cardToCharge);
   }
 }

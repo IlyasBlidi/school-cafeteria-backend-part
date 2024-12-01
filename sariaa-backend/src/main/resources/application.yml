@@ -12,11 +12,20 @@ spring:
       hibernate:
         format_sql: true
 
-logging:
-  level:
-    sql: debug
 
 server:
   error:
     include-message: always
     include-binding-errors: always
+
+logging:
+  level:
+#    root: INFO
+#    org.springframework: DEBUG
+#    your.package.name: DEBUG
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    sql: debug
+
+
+

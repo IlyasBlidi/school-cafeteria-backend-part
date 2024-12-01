@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 public class ArticleCommandService {
   private final ArticleCommandRepository articleCommandRepository;
 
+  public ArticleCommand saveArticleCommand(ArticleCommand articleCommand){
+  return articleCommandRepository.save(articleCommand) ;
+  }
+
 //  public ArticleCommand addArticleToCommand(UUID commandId, UUID ArticleId) {
 //
 //  }

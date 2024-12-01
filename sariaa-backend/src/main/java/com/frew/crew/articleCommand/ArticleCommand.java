@@ -14,6 +14,7 @@ import java.io.Serializable;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ArticleCommand implements Serializable {
   @EmbeddedId
   private ArticleCommandId id;
