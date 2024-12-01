@@ -12,6 +12,8 @@ import java.util.UUID;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+public
 class ArticleCommandId implements Serializable {
   private UUID articleId;
   private UUID commandId;

@@ -26,7 +26,7 @@ public class Command {
   @Column(name = "id")
   private UUID id;
 
-  @Column(nullable = false)
+  @Column
   private BigDecimal totalPrice;
 
   @Column(nullable = false)
