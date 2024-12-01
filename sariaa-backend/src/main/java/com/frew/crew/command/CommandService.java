@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +30,11 @@ public class CommandService {
     return totalPrice;
   }
 
-  public List<Command> getAllCommands() {
-    return commandRepository.findAll();
+  public List<CommandDTO> getAllCommands() {
+    return commandRepository.findAll()
+      .stream()
+      .map(CommandMapper::toCommandDTO)
+      .collect(Collectors.toList());
   }
 
   public Command saveCommand(UUID userId) {

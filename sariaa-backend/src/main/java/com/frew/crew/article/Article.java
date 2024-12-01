@@ -23,12 +23,19 @@ public class Article {
   @GeneratedValue(strategy = GenerationType.UUID)
   @Column(name = "id")
   private UUID id;
+
   @Column(nullable = false)
   private String title;
+
   @Column(nullable = false)
   private String description;
+
   @Column(nullable = false)
   private BigDecimal price;
+
+  @Column(nullable = false)
+  private Integer maxQuantityAvailable;
+
   @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonIgnore
   private List<ArticleCommand> articleCommands;

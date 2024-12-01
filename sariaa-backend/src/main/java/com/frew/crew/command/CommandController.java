@@ -14,8 +14,8 @@ public class CommandController {
   private final CommandService commandService;
 
   @GetMapping
-  public ResponseEntity<List<Command>> getAllCommands() {
-    List<Command> commands = commandService.getAllCommands();
+  public ResponseEntity<List<CommandDTO>> getAllCommands() {
+    List<CommandDTO> commands = commandService.getAllCommands();
     return ResponseEntity.ok(commands);
   }
 

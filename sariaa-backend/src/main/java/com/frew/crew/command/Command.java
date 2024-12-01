@@ -19,7 +19,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "commands")
+@Table(
+  name = "commands",
+  indexes = @Index(name = "key_user_id", columnList = "user_id")
+)
 public class Command {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -36,7 +39,11 @@ public class Command {
   @JsonIgnore
   private List<ArticleCommand> commandArticles;
 
+  @JsonIgnore
   @ManyToOne
-  @JoinColumn(name = "user_id")
+  @JoinColumn(
+    name = "user_id",
+    foreignKey = @ForeignKey(name = "fk_user_id")
+  )
   private User user;
 }
