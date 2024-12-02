@@ -3,6 +3,7 @@ package com.frew.crew.auth;
 import com.frew.crew.card.Card;
 import com.frew.crew.card.CardRepository;
 import com.frew.crew.config.JwtService;
+import com.frew.crew.role.Role;
 import com.frew.crew.user.User;
 import com.frew.crew.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ public class AuthenticationService {
         .lastName(request.getLastName())
         .email(request.getEmail())
         .password(passwordEncoder.encode(request.getPassword()))
-        .role(request.getRole())
+        .role(request.getRole() != null ? request.getRole() : Role.USER)
         .card(card) // Associate the card
         .build();
 

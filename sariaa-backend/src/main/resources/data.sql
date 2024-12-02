@@ -1,5 +1,5 @@
 -- First, insert categories
-INSERT INTO category (id, name, description) VALUES
+INSERT INTO categories (id, name, description) VALUES
 ('550e8400-e29b-41d4-a716-446655440000', 'Breakfast', 'Morning meals served from 7AM to 10:30AM. Complete breakfast options.'),
 ('550e8400-e29b-41d4-a716-446655440001', 'Lunch', 'Main dining period from 11:30AM to 2:30PM. Complete meals with main course.'),
 ('550e8400-e29b-41d4-a716-446655440002', 'Snacks', 'Available throughout operating hours. Quick bites and light refreshments.'),
