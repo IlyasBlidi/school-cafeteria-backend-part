@@ -10,6 +10,7 @@ import com.frew.crew.card.Card;
 import com.frew.crew.card.CardService;
 import com.frew.crew.user.User;
 import com.frew.crew.user.UserRepository;
+import com.frew.crew.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,6 +30,7 @@ public class CommandService {
   private final CommandRepository commandRepository;
   private final ArticleCommandRepository articlecommandRepository;
   private final UserRepository userRepository;
+  private final UserService userService;
   private final ArticleRepository articleRepository;
 
   private final CardService cardService ;
@@ -47,61 +49,67 @@ public class CommandService {
     return commandRepository.findAll();
   }
 
+  public Command getCommandById(UUID commandId){
+    Optional<Command> command =  commandRepository.findById(commandId) ;
+    return command.get();
+  }
+
   @Transactional
-  public Command saveCommand(UUID userId, List<ArticleCommandDTO> articleCommandsDTO) {
-    Optional<User> user = userRepository.findById(userId);
-    if (user.isEmpty()) {
-      throw new UsernameNotFoundException("User not found");
-    }
+  public Command saveAcceptedCommand(UUID commandId) {
 
-    Command command = Command.builder()
-            .commandDate(LocalDate.now())
-            .status(Status.NEW)
-            .user(user.get())
-            .build();
+    Command command = getCommandById(commandId) ;
+    command.setStatus(Status.ACCEPTED);
 
-    // First, save the command to generate its ID
-    Command savedCommand = commandRepository.save(command);
-    List<ArticleCommand> articleCommands = new ArrayList<>();
-    for (ArticleCommandDTO articleCommandDto : articleCommandsDTO) {
-      Optional<Article> article = articleRepository.findById(articleCommandDto.getArticleId());
-      if (article.isEmpty()) {
-        throw new EntityNotFoundException("Article not found with ID: " + articleCommandDto.getArticleId());
-      }
 
-      ArticleCommandId articleCommandId = ArticleCommandId
-              .builder()
-              .articleId(article.get().getId())
-              .commandId(savedCommand.getId())
-              .build();
+    cardService.debitCardBalance(command.getUser().getCard().getId() ,command.getTotalPrice());
+    Command savedcommand = commandRepository.save(command) ;
+    return savedcommand;
+  }
 
-      ArticleCommand articleCommand = ArticleCommand
-              .builder()
-              .id(articleCommandId)
-              .command(savedCommand)
-              .article(article.get())
-              .quantity(articleCommandDto.getQuantity())
-              .build();
+  @Transactional
+  public Command saveCookingCommand( UUID commandId) {
 
-      articlecommandRepository.save(articleCommand);
-      articleCommands.add(articleCommand);
-    }
-    savedCommand.setCommandArticles(articleCommands);
-    savedCommand.setTotalPrice(this.calculateTotalPrice(articleCommands));
-    commandRepository.save(savedCommand) ;
-    return savedCommand;
+    Command command = getCommandById(commandId) ;
+    command.setStatus(Status.ACCEPTED);
+    Command savedcommand = commandRepository.save(command) ;
+    return savedcommand;
   }
   @Transactional
+  public Command saveReadyCommand( UUID commandId) {
+
+    Command command = getCommandById(commandId) ;
+    command.setStatus(Status.READY);
+    Command savedcommand = commandRepository.save(command) ;
+    return savedcommand;
+  }
+
+  @Transactional
+  public Command saveCompletedCommand( UUID commandId) {
+
+    Command command = getCommandById(commandId) ;
+    command.setStatus(Status.COMPLETED);
+    Command savedcommand = commandRepository.save(command) ;
+    return savedcommand;
+  }
+  @Transactional
+  public Command saveDeclinedCommand( UUID commandId) {
+
+    Command command = getCommandById(commandId) ;
+    command.setStatus(Status.DECLINED);
+    Command savedcommand = commandRepository.save(command) ;
+    return savedcommand;
+  }
+
+
+
+  @Transactional
   public Command saveNewCommand(UUID userId, List<ArticleCommandDTO> articleCommandsDTO) {
-    Optional<User> user = userRepository.findById(userId);
-    if (user.isEmpty()) {
-      throw new UsernameNotFoundException("User not found");
-    }
+    User user = userService.getUser(userId) ;
 
     Command command = Command.builder()
             .commandDate(LocalDate.now())
             .status(Status.NEW)
-            .user(user.get())
+            .user(user)
             .build();
 
     // First, save the command to generate its ID
@@ -116,31 +124,37 @@ public class CommandService {
       }
 
       ArticleCommandId articleCommandId = ArticleCommandId
-              .builder()
-              .articleId(article.get().getId())
-              .commandId(savedCommand.getId())
-              .build();
+        .builder()
+        .articleId(article.get().getId())
+        .commandId(savedCommand.getId())
+        .build();
 
       ArticleCommand articleCommand = ArticleCommand
-              .builder()
-              .id(articleCommandId)
-              .command(savedCommand)
-              .article(article.get())
-              .quantity(articleCommandDto.getQuantity())
-              .build();
+        .builder()
+        .id(articleCommandId)
+        .command(savedCommand)
+        .article(article.get())
+        .quantity(articleCommandDto.getQuantity())
+        .build();
 
-      articlecommandRepository.save(articleCommand);
       articleCommands.add(articleCommand);
     }
 
+    if (cardService.isAmountAvailable(user.getCard().getId() , this.calculateTotalPrice(articleCommands))){
+      for (ArticleCommand articleCommand : articleCommands){
 
-    savedCommand.setCommandArticles(articleCommands);
-    savedCommand.setTotalPrice(this.calculateTotalPrice(articleCommands));
-
-    cardService.debitCardBalance(user.get().getCard().getId() ,savedCommand.getTotalPrice());
-    commandRepository.save(savedCommand) ;
+      articlecommandRepository.save(articleCommand);
+    }
 
 
-    return savedCommand;
+
+      savedCommand.setCommandArticles(articleCommands);
+      savedCommand.setTotalPrice(this.calculateTotalPrice(articleCommands));
+      commandRepository.save(savedCommand) ;
+
+
+      return savedCommand;}
+    else
+        return Command.builder().status(Status.DECLINED).build() ;
   }
 }

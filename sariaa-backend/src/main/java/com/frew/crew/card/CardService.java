@@ -42,7 +42,7 @@ public class CardService {
     }
 
     Card cardTodebit = card.get();
-    if(cardTodebit.getBalance().compareTo(amount) < 0) {
+    if(!isAmountAvailable(cardId , amount)) {
       throw new RuntimeException("solde insuffisant");
     }else{
     cardTodebit.setBalance(cardTodebit.getBalance().subtract(amount));
@@ -51,5 +51,22 @@ public class CardService {
 
     return cardRepository.save(cardTodebit);
 
+  }
+
+  public boolean isAmountAvailable(UUID cardId , BigDecimal amount){
+
+    if(getCardById( cardId).getBalance().compareTo(amount) < 0) {
+      return false ;
+    }else return true ;
+
+  }
+
+  public Card getCardById(UUID cardId){
+    Optional<Card> card = cardRepository.findById(cardId);
+    if (card.isEmpty()) {
+      throw new RuntimeException("Card not found");
+    }
+
+   return card.get();
   }
 }

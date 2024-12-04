@@ -36,12 +36,25 @@ public class CommandController {
 //  }
 
   @PostMapping("/{userId}")
-  public ResponseEntity<Command> createCommand(
+  public ResponseEntity<Command> createNewCommand(
           @PathVariable UUID userId,
           @RequestBody List<ArticleCommandDTO> articleCommandsDto
   ) {
 
-    return ResponseEntity.ok(commandService.saveCommand(userId, articleCommandsDto));
+    Command command = commandService.saveNewCommand(userId, articleCommandsDto) ;
+    if (command.getStatus().equals(Status.NEW)){
+      return ResponseEntity.ok(command) ;
+    }
+    else
+      return ResponseEntity.ok(command);
+  }
+  @PostMapping("/{userId}/cooking")
+  public ResponseEntity<Command> createCookingCommand(
+          @PathVariable UUID userId,
+          @RequestBody List<ArticleCommandDTO> articleCommandsDto
+  ) {
+
+    return ResponseEntity.ok(commandService.saveCookingCommand(userId));
   }
 
 }
