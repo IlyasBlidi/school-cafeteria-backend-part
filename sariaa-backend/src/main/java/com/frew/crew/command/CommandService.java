@@ -37,7 +37,7 @@ public class CommandService {
 
   private final CardService cardService ;
 
-  private SimpMessagingTemplate messagingTemplate;
+  private final SimpMessagingTemplate messagingTemplate;
 
 
 
@@ -157,7 +157,7 @@ public class CommandService {
       savedCommand.setCommandArticles(articleCommands);
       savedCommand.setTotalPrice(this.calculateTotalPrice(articleCommands));
       commandRepository.save(savedCommand) ;
-
+      messagingTemplate.convertAndSend("/topic/NewCommands", command);
 
       return savedCommand;}
     else

@@ -5,6 +5,8 @@ import com.frew.crew.articleCommand.ArticleCommandDTO;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +36,9 @@ public class CommandController {
 //    Command command = commandService.saveCommand(userId, articles);
 //    return new ResponseEntity<>(command, HttpStatus.CREATED);
 //  }
+
+
+
 
   @PostMapping("/{userId}")
   public ResponseEntity<Command> createNewCommand(
