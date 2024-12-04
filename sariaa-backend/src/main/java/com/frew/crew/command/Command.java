@@ -36,7 +36,7 @@ public class Command {
   private Status status;
 
   @OneToMany(mappedBy = "command", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonIgnore
+
   private List<ArticleCommand> commandArticles;
 
   @ManyToOne

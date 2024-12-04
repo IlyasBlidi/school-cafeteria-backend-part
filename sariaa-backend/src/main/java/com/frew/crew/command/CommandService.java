@@ -13,6 +13,8 @@ import com.frew.crew.user.UserRepository;
 import com.frew.crew.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +36,10 @@ public class CommandService {
   private final ArticleRepository articleRepository;
 
   private final CardService cardService ;
+
+  private SimpMessagingTemplate messagingTemplate;
+
+
 
   private BigDecimal calculateTotalPrice(List<ArticleCommand> articles) {
     BigDecimal totalPrice = BigDecimal.ZERO;
