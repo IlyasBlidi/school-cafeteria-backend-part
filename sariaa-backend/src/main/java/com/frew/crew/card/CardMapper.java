@@ -11,4 +11,12 @@ public class CardMapper {
         card.getUser() != null ? toUserSummaryDTO(card.getUser()) : null
     );
   }
+
+  public static CardBodyDTO toCardBodyDTO(Card card) {
+    return CardBodyDTO.builder()
+      .cardId(card.getId())
+      .balance(card.getBalance())
+      .lastUpdateDate(card.getLastUpdateDate())
+      .build();
+  }
 }
