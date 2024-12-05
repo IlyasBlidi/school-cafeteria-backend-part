@@ -25,7 +25,7 @@ public class CardService {
         .collect(Collectors.toList());
   }
 
-  public Card chargeCardBalance(UUID cardId, BigDecimal amount) {
+  public CardBodyDTO chargeCardBalance(UUID cardId, BigDecimal amount) {
     Optional<Card> card = cardRepository.findById(cardId);
     if (card.isEmpty()) {
       throw new RuntimeException("Card not found");
@@ -33,7 +33,8 @@ public class CardService {
     Card cardToCharge = card.get();
     cardToCharge.setBalance(cardToCharge.getBalance().add(amount));
     cardToCharge.setLastUpdateDate(LocalDate.now());
-    return cardRepository.save(cardToCharge);
+    cardRepository.save(cardToCharge);
+    return CardMapper.toCardBodyDTO(cardToCharge);
   }
 
   public CardBodyDTO findCardByUserId(UUID userId) {
