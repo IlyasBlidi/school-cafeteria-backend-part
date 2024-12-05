@@ -1,7 +1,5 @@
 package com.frew.crew.notification;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.frew.crew.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -17,7 +15,7 @@ public class NotificationService {
     private final NotificationMapper notificationMapper = new NotificationMapper();
 
     public Notification createNotification(User user, NotificationType type, String title,
-                                           String message, Object metadata) {
+                                           String message) {
 
         Notification notification = Notification.builder()
                 .user(user)

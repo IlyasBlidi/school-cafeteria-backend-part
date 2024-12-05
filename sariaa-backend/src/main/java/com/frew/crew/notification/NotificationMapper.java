@@ -51,7 +51,6 @@ public class NotificationMapper {
             case ORDER_PLACED, ORDER_READY, ORDER_CONFIRMED, ORDER_COMPLETED -> "Order Details";
             case BALANCE_UPDATED, LOW_BALANCE -> "Account Balance";
             case SYSTEM_NOTIFICATION -> "System";
-            default -> null;
         };
     }
 
