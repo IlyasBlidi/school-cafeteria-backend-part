@@ -1,5 +1,7 @@
 package com.frew.crew.card;
 
+import com.frew.crew.user.User;
+import com.frew.crew.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CardService {
   private final CardRepository cardRepository;
+  private final UserRepository userRepository;
 
   public List<CardDTO> getAllCards() {
     return cardRepository.findAll()
@@ -31,5 +34,13 @@ public class CardService {
     cardToCharge.setBalance(cardToCharge.getBalance().add(amount));
     cardToCharge.setLastUpdateDate(LocalDate.now());
     return cardRepository.save(cardToCharge);
+  }
+
+  public CardBodyDTO findCardByUserId(UUID userId) {
+    Optional<User> userOptional = userRepository.findById(userId);
+    if (userOptional.isEmpty()) {
+      throw new RuntimeException("User not found");
+    }
+    return CardMapper.toCardBodyDTO(cardRepository.findByUserId(userId));
   }
 }
