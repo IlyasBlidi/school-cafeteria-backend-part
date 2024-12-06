@@ -2,10 +2,7 @@ package com.frew.crew.command;
 
 import com.frew.crew.article.Article;
 import com.frew.crew.article.ArticleRepository;
-import com.frew.crew.articleCommand.ArticleCommand;
-import com.frew.crew.articleCommand.ArticleCommandDTO;
-import com.frew.crew.articleCommand.ArticleCommandId;
-import com.frew.crew.articleCommand.ArticleCommandRepository;
+import com.frew.crew.articleCommand.*;
 import com.frew.crew.card.Card;
 import com.frew.crew.card.CardService;
 import com.frew.crew.user.User;
@@ -21,10 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +54,12 @@ public class CommandService {
     return command.get();
   }
 
+  public List<Command>  getActiveCommandsByUserId(UUID userId){
+
+    List<Command> commands = commandRepository.findByStatusesAndUser(Arrays.asList(Status.NEW.toString() , Status.COOKING.toString() , Status.READY.toString()) , userId) ;
+    return commands  ;
+  }
+
   @Transactional
   public Command saveAcceptedCommand(UUID commandId) {
 
@@ -76,8 +76,10 @@ public class CommandService {
   public Command saveCookingCommand( UUID commandId) {
 
     Command command = getCommandById(commandId) ;
-    command.setStatus(Status.ACCEPTED);
+    command.setStatus(Status.COOKING);
+    cardService.debitCardBalance(command.getUser().getCard().getId() ,command.getTotalPrice());
     Command savedcommand = commandRepository.save(command) ;
+    messagingTemplate.convertAndSend("/topic/Commands", savedcommand);
     return savedcommand;
   }
   @Transactional
@@ -86,6 +88,7 @@ public class CommandService {
     Command command = getCommandById(commandId) ;
     command.setStatus(Status.READY);
     Command savedcommand = commandRepository.save(command) ;
+    messagingTemplate.convertAndSend("/topic/Commands", savedcommand);
     return savedcommand;
   }
 
@@ -95,6 +98,7 @@ public class CommandService {
     Command command = getCommandById(commandId) ;
     command.setStatus(Status.COMPLETED);
     Command savedcommand = commandRepository.save(command) ;
+    messagingTemplate.convertAndSend("/topic/Commands", savedcommand);
     return savedcommand;
   }
   @Transactional
@@ -111,18 +115,12 @@ public class CommandService {
   @Transactional
   public Command saveNewCommand(UUID userId, List<ArticleCommandDTO> articleCommandsDTO) {
     User user = userService.getUser(userId) ;
-
     Command command = Command.builder()
             .commandDate(LocalDate.now())
             .status(Status.NEW)
             .user(user)
             .build();
-
-    // First, save the command to generate its ID
-    Command savedCommand = commandRepository.save(command);
-
     List<ArticleCommand> articleCommands = new ArrayList<>();
-
     for (ArticleCommandDTO articleCommandDto : articleCommandsDTO) {
       Optional<Article> article = articleRepository.findById(articleCommandDto.getArticleId());
       if (article.isEmpty()) {
@@ -132,32 +130,31 @@ public class CommandService {
       ArticleCommandId articleCommandId = ArticleCommandId
         .builder()
         .articleId(article.get().getId())
-        .commandId(savedCommand.getId())
+
         .build();
 
       ArticleCommand articleCommand = ArticleCommand
         .builder()
         .id(articleCommandId)
-        .command(savedCommand)
         .article(article.get())
         .quantity(articleCommandDto.getQuantity())
         .build();
 
       articleCommands.add(articleCommand);
     }
-
+    // First, save the command to generate its ID
     if (cardService.isAmountAvailable(user.getCard().getId() , this.calculateTotalPrice(articleCommands))){
+      Command savedCommand = commandRepository.save(command);
       for (ArticleCommand articleCommand : articleCommands){
-
+        articleCommand.getId().setCommandId(savedCommand.getId());
+        articleCommand.setCommand(savedCommand);
       articlecommandRepository.save(articleCommand);
     }
-
-
 
       savedCommand.setCommandArticles(articleCommands);
       savedCommand.setTotalPrice(this.calculateTotalPrice(articleCommands));
       commandRepository.save(savedCommand) ;
-      messagingTemplate.convertAndSend("/topic/NewCommands", command);
+      messagingTemplate.convertAndSend("/topic/Commands", savedCommand);
 
       return savedCommand;}
     else

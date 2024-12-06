@@ -28,22 +28,12 @@ public class CommandWebSocketController {
       // Log before sending
       System.out.println("Sending WebSocket message for command: " + command.getId());
 
-      messagingTemplate.convertAndSend("/topic/newCommands", command);
+      messagingTemplate.convertAndSend("/topic/Commands", command);
     } catch (Exception e) {
       // Log any errors in sending
       System.err.println("Error sending WebSocket message: " + e.getMessage());
     }
   }
 
-  @MessageMapping("/hello")
-  @SendTo("/topic/greetings")
-  @Transactional
-  public void confirmCommand(UUID commandId , @Payload Command messagecommand) {
-    Command command = commandRepository.findById(commandId)
-      .orElseThrow(() -> new RuntimeException("Command not found"));
-    command.setStatus(Status.ACCEPTED);
-    commandRepository.save(command);
-    ;
-    notifyAdminAboutNewCommand(command); // Notify via WebSocket
-  }
+
 }

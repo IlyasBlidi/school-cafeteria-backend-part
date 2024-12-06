@@ -38,7 +38,12 @@ public class CommandController {
 //  }
 
 
-
+  @GetMapping("/active/{userId}")
+  public ResponseEntity<List<Command>> getActiveCommandByUserId(
+    @PathVariable UUID userId
+  ){
+      return ResponseEntity.ok(commandService.getActiveCommandsByUserId(userId)) ;
+  }
 
   @PostMapping("/{userId}")
   public ResponseEntity<Command> createNewCommand(
@@ -53,13 +58,29 @@ public class CommandController {
     else
       return ResponseEntity.ok(command);
   }
-  @PostMapping("/{userId}/cooking")
+
+
+  @PatchMapping("/cooking/{commandId}")
   public ResponseEntity<Command> createCookingCommand(
-          @PathVariable UUID userId,
-          @RequestBody List<ArticleCommandDTO> articleCommandsDto
+          @PathVariable UUID commandId
   ) {
 
-    return ResponseEntity.ok(commandService.saveCookingCommand(userId));
+    return ResponseEntity.ok(commandService.saveCookingCommand(commandId));
+  }
+
+  @PatchMapping("/ready/{commandId}")
+  public ResponseEntity<Command> createReadyCommand(
+          @PathVariable UUID commandId
+  ) {
+
+    return ResponseEntity.ok(commandService.saveReadyCommand(commandId));
+  }
+  @PatchMapping("/completed/{commandId}")
+  public ResponseEntity<Command> createCompletedCommand(
+          @PathVariable UUID commandId
+  ) {
+
+    return ResponseEntity.ok(commandService.saveCompletedCommand(commandId));
   }
 
 }
