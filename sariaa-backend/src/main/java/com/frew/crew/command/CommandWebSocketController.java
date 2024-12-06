@@ -3,6 +3,7 @@ package com.frew.crew.command;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -37,12 +38,12 @@ public class CommandWebSocketController {
   @MessageMapping("/hello")
   @SendTo("/topic/greetings")
   @Transactional
-  public void confirmCommand(UUID commandId) {
+  public void confirmCommand(UUID commandId , @Payload Command messagecommand) {
     Command command = commandRepository.findById(commandId)
       .orElseThrow(() -> new RuntimeException("Command not found"));
     command.setStatus(Status.ACCEPTED);
     commandRepository.save(command);
-
+    ;
     notifyAdminAboutNewCommand(command); // Notify via WebSocket
   }
 }

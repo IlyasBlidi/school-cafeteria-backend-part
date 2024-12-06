@@ -2,30 +2,26 @@ package com.frew.crew.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.*;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-
-    @Override
+  @Override
   public void configureMessageBroker(MessageBrokerRegistry config) {
-    config.enableSimpleBroker("/topic");
-    config.setApplicationDestinationPrefixes("/app");
+    config.enableSimpleBroker("/queue", "/topic", "/user"); // Enables destinations
+    config.setApplicationDestinationPrefixes("/app");       // Application message prefix
+    config.setUserDestinationPrefix("/user");              // User-specific prefix
   }
+
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.addEndpoint("/ws")
-      .setAllowedOriginPatterns("*")
-      .withSockJS();
-  }
-  // Add this method for additional CORS configuration
-  @Override
-  public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-    registration
-      .setMessageSizeLimit(64 * 1024)  // Increase message size limit
-      .setSendBufferSizeLimit(512 * 1024)
-      .setSendTimeLimit(20000); // 20 seconds
-  }
+    registry.addEndpoint("/ws") //
+      .setAllowedOriginPatterns("*") //
+      .withSockJS();                //
+}
 }
