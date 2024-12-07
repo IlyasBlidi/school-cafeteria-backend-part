@@ -32,8 +32,11 @@ public class Command {
   @Column(nullable = false)
   private LocalDate commandDate;
 
+  @Column(name = "status")
+  private Status status;
+
   @OneToMany(mappedBy = "command", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonIgnore
+
   private List<ArticleCommand> commandArticles;
 
   @ManyToOne

@@ -11,6 +11,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -21,19 +26,41 @@ public class SecurityConfiguration {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
-        .cors(Customizer.withDefaults())
-        .csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(req ->
-            req.requestMatchers(
-                    "/**"
-                ).permitAll()
-                .anyRequest()
-                .authenticated()
-
-        )
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authenticationProvider(authenticationProvider)
-        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+      .cors(Customizer.withDefaults())
+      .csrf(AbstractHttpConfigurer::disable)
+      .authorizeHttpRequests(req ->
+        req.requestMatchers(
+            "/ws/**",           // Allow WebSocket endpoint
+            "/api/public/**",   // Add other public endpoints as needed
+            "/public/**"  ,
+            "/**"
+            // Add other public paths
+          ).permitAll()
+          .anyRequest()
+          .authenticated()
+      )
+      .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+      .authenticationProvider(authenticationProvider)
+      .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
+  }
+
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(Arrays.asList(
+      "http://localhost:3000",
+      "http://127.0.0.1:3000"
+    ));
+    configuration.setAllowedMethods(Arrays.asList(
+      "GET", "POST", "PUT", "DELETE", "OPTIONS"
+    ));
+    configuration.setAllowedHeaders(Arrays.asList("*"));
+    configuration.setAllowCredentials(true);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    source.registerCorsConfiguration("/ws/**", configuration);
+    return source;
   }
 }

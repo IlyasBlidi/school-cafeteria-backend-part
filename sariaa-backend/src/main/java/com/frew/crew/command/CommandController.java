@@ -5,6 +5,8 @@ import com.frew.crew.articleCommand.ArticleCommandDTO;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,13 +37,50 @@ public class CommandController {
 //    return new ResponseEntity<>(command, HttpStatus.CREATED);
 //  }
 
+
+  @GetMapping("/active/{userId}")
+  public ResponseEntity<List<Command>> getActiveCommandByUserId(
+    @PathVariable UUID userId
+  ){
+      return ResponseEntity.ok(commandService.getActiveCommandsByUserId(userId)) ;
+  }
+
   @PostMapping("/{userId}")
-  public ResponseEntity<Command> createCommand(
+  public ResponseEntity<Command> createNewCommand(
           @PathVariable UUID userId,
           @RequestBody List<ArticleCommandDTO> articleCommandsDto
   ) {
 
-    return ResponseEntity.ok(commandService.saveCommand(userId, articleCommandsDto));
+    Command command = commandService.saveNewCommand(userId, articleCommandsDto) ;
+    if (command.getStatus().equals(Status.NEW)){
+      return ResponseEntity.ok(command) ;
+    }
+    else
+      return ResponseEntity.ok(command);
+  }
+
+
+  @PatchMapping("/cooking/{commandId}")
+  public ResponseEntity<Command> createCookingCommand(
+          @PathVariable UUID commandId
+  ) {
+
+    return ResponseEntity.ok(commandService.saveCookingCommand(commandId));
+  }
+
+  @PatchMapping("/ready/{commandId}")
+  public ResponseEntity<Command> createReadyCommand(
+          @PathVariable UUID commandId
+  ) {
+
+    return ResponseEntity.ok(commandService.saveReadyCommand(commandId));
+  }
+  @PatchMapping("/completed/{commandId}")
+  public ResponseEntity<Command> createCompletedCommand(
+          @PathVariable UUID commandId
+  ) {
+
+    return ResponseEntity.ok(commandService.saveCompletedCommand(commandId));
   }
 
 }
