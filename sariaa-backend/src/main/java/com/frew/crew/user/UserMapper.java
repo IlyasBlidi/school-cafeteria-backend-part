@@ -1,6 +1,10 @@
 package com.frew.crew.user;
 
 public class UserMapper {
+  private UserMapper() {
+    // Prevent instantiation
+  }
+
   public static UserDTO toUserDTO(User user) {
     return new UserDTO(
         user.getId(),

@@ -5,8 +5,7 @@ INSERT INTO categories (id, name, description) VALUES
 ('550e8400-e29b-41d4-a716-446655440002', 'Snacks', 'Available throughout operating hours. Quick bites and light refreshments.'),
 ('550e8400-e29b-41d4-a716-446655440003', 'Beverages', 'Hot and cold drinks available throughout operating hours.'),
 ('550e8400-e29b-41d4-a716-446655440004', 'Side Dishes', 'Complementary dishes to accompany main meals.'),
-('550e8400-e29b-41d4-a716-446655440005', 'Desserts', 'Sweet treats and dessert options.'),
-('550e8400-e29b-41d4-a716-446655440006', 'VIP Menu', 'Special pre-order menu items with premium ingredients and preparation.');
+('550e8400-e29b-41d4-a716-446655440005', 'Desserts', 'Sweet treats and dessert options.');
 
 -- Then insert articles with matching category IDs
 INSERT INTO articles (id, title, description, price, category_id) VALUES

@@ -22,8 +22,14 @@ public class CardController {
   }
 
   @PatchMapping("/{cardId}")
-  public ResponseEntity<Card> chargeCardBalance(@PathVariable UUID cardId, @RequestBody BigDecimal amount) {
-    Card card = cardService.chargeCardBalance(cardId, amount);
+  public ResponseEntity<CardBodyDTO> chargeCardBalance(@PathVariable UUID cardId, @RequestBody BigDecimal amount) {
+    CardBodyDTO card = cardService.chargeCardBalance(cardId, amount);
     return new ResponseEntity<>(card, HttpStatus.ACCEPTED);
+  }
+
+  @GetMapping("/{userId}")
+  public ResponseEntity<CardBodyDTO> getCardByUserId(@PathVariable String userId) {
+    CardBodyDTO card = cardService.findCardByUserId(UUID.fromString(userId));
+    return new ResponseEntity<>(card, HttpStatus.OK);
   }
 }
