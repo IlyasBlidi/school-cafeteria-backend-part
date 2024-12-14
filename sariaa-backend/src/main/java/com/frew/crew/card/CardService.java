@@ -1,11 +1,13 @@
 package com.frew.crew.card;
 
 
-import jakarta.transaction.Transactional;
 import com.frew.crew.user.User;
 import com.frew.crew.user.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 public class CardService {
   private final CardRepository cardRepository;
   private final UserRepository userRepository;
+  private final SimpMessagingTemplate messagingTemplate;
 
   public List<CardDTO> getAllCards() {
     return cardRepository.findAll()
@@ -35,6 +38,10 @@ public class CardService {
     cardToCharge.setBalance(cardToCharge.getBalance().add(amount));
     cardToCharge.setLastUpdateDate(LocalDate.now());
     cardRepository.save(cardToCharge);
+
+    String destination = String.format("/user/%s/queue/card", cardToCharge.getUser().getEmail());
+    messagingTemplate.convertAndSend(destination, cardToCharge);
+
     return CardMapper.toCardBodyDTO(cardToCharge);
   }
 
