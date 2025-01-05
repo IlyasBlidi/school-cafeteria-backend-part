@@ -77,6 +77,7 @@ public class AuthenticationService {
       .lastName(user.getLastName())
       .email(user.getEmail())
       .role(user.getRole())
+      .card(user.getCard())
       .token(jwtToken)
       .build();
   }
