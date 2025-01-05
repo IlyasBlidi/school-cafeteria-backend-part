@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -57,6 +58,7 @@ public class User implements UserDetails {
     foreignKey = @ForeignKey(name = "fk_card_id")
   )
   private Card card;
+
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -14,6 +14,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/users")
 public class UserController {
   private final UserService userService;
+  private  final UserRepository userRepository;
 
   @GetMapping
   public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -31,5 +32,15 @@ public class UserController {
   public ResponseEntity<User> deleteUserById(@PathVariable UUID userId) {
     userService.deleteUserById(userId);
     return ResponseEntity.ok().build();
+  }
+
+  @PostMapping("/generate")
+  public void generate(){
+    List<User> users = UserDataGenerator.generateUsers(1000000);
+
+    users.forEach(user -> {
+      user.setPassword(user.getPassword());
+      userRepository.save(user);
+    });
   }
 }

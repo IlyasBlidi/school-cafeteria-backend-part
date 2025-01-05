@@ -15,25 +15,15 @@ import java.util.UUID;
 @Controller
 @RequiredArgsConstructor
 public class CommandWebSocketController {
-
-  private final SimpMessagingTemplate messagingTemplate; // Add `final` to inject properly
-  private final CommandRepository commandRepository;
-
+  private final SimpMessagingTemplate messagingTemplate;
 
   @Async
   public void notifyAdminAboutNewCommand(Command command) {
     try {
-
-
-      // Log before sending
       System.out.println("Sending WebSocket message for command: " + command.getId());
-
       messagingTemplate.convertAndSend("/topic/Commands", command);
     } catch (Exception e) {
-      // Log any errors in sending
       System.err.println("Error sending WebSocket message: " + e.getMessage());
     }
   }
-
-
 }

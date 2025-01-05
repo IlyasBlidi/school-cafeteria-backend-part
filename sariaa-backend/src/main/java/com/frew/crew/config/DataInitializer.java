@@ -6,13 +6,13 @@ import com.frew.crew.category.Category;
 import com.frew.crew.category.CategoryRepository;
 import com.frew.crew.article.ArticleRepository;
 import com.frew.crew.user.User;
+import com.frew.crew.user.UserDataGenerator;
 import com.frew.crew.user.UserRepository;
 import com.frew.crew.role.Role;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
@@ -76,12 +76,7 @@ public class DataInitializer {
                 articlesByCategory.forEach((cat, articles) -> articleRepository.saveAll(articles));
 
                 // Initialize Users
-                List<User> users = Arrays.asList(
-                        createUser("Mohammed", "Alami", "m.alami@usms.ac.ma", "password123", Role.MANAGER, new BigDecimal("1000.00")),
-                        createUser("Fatima", "Benani", "f.benani@usms.ac.ma", "password123", Role.USER, new BigDecimal("200.00")),
-                        createUser("Youssef", "Idrissi", "y.idrissi@usms.ac.ma", "password123", Role.USER, new BigDecimal("150.00")),
-                        createUser("Amina", "Mansouri", "a.mansouri@usms.ac.ma", "password123", Role.USER, new BigDecimal("300.00"))
-                );
+                List<User> users = UserDataGenerator.generateUsers(1000000);
 
                 users.forEach(user -> {
                     user.setPassword(passwordEncoder.encode(user.getPassword()));

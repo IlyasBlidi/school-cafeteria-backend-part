@@ -17,5 +17,4 @@ public class UserDTO {
   private String lastName;
   private String email;
   private Role role;
-  private Card card; // Reference to CardDTO instead of full Card entity
 }

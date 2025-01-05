@@ -24,7 +24,6 @@ public class NotificationController {
     private final UserRepository userRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
-
     @GetMapping
     public List<NotificationDTO> getUserNotifications() {
         User userDetails = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -36,7 +35,6 @@ public class NotificationController {
                 .map(notificationMapper::toDTO)
                 .collect(Collectors.toList());
     }
-
 
     @PostMapping("/{id}/read")
     public void markAsRead(@PathVariable Long id) {
