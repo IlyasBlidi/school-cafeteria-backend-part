@@ -32,8 +32,8 @@ Ensure you have the following installed:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/IlyasBlidi/sariaa-backend.git
-   cd sariaa-backend
+   git clone https://github.com/IlyasBlidi/school-cafeteria-backend-part.git
+   cd school-cafeteria-backend-part
    ```
 
 2. Start the backend application:
