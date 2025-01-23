@@ -56,22 +56,6 @@ backend/                # Spring Boot application
 └── src/test            # Test files
 ```
 
-## 🤝 Contributing
-
-We welcome contributions! Please feel free to submit a Pull Request.
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Contact
-
-For any queries regarding this project, please contact:
-
-- 📧 [Project Email]
-- 💼 [LinkedIn Profile]
-- 🐦 [Twitter Handle]
-
 ---
 
 <div align="center">
